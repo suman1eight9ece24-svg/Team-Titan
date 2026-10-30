@@ -315,14 +315,33 @@ h1 { margin: 0; font: 800 clamp(25px, 3vw, 32px)/1.2 "Manrope", sans-serif; lett
   .dashboard-side .panel:first-child { grid-column: 1 / -1; }
 }
 @media (max-width: 600px) {
-  .sidebar { display: none; }
+  .sidebar {
+    display: flex;
+    position: fixed;
+    z-index: 30;
+    inset: auto 0 0;
+    width: 100%;
+    height: calc(66px + env(safe-area-inset-bottom));
+    padding: 6px 10px calc(6px + env(safe-area-inset-bottom));
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+  }
+  .sidebar .brand, .sidebar .sidebar-label, .sidebar .sidebar-bottom { display: none; }
+  .sidebar .primary-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; gap: 4px; }
+  .sidebar .nav-link { display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 5px 3px; font-size: 9px; }
+  .sidebar .nav-link > span:not(.nav-icon) { display: block; }
+  .sidebar .nav-link .nav-count { display: none; }
+  .sidebar .nav-icon { font-size: 17px; line-height: 1.1; }
   .main-area { margin-left: 0; }
   .topbar { height: 58px; padding: 0 17px; }
   .mobile-brand { display: inline-block; }
   .breadcrumb { display: none; }
   .topbar-actions { gap: 8px; }
   .today-label { display: none; }
-  .page-wrap { padding: 24px 15px 18px; }
+  .page-wrap { padding: 24px 15px calc(86px + env(safe-area-inset-bottom)); }
   .page-heading { align-items: flex-start; margin-bottom: 20px; }
   .page-heading h1 { font-size: 25px; }
   .page-heading .button { min-height: 36px; padding: 0 10px; font-size: 10px; white-space: nowrap; }
