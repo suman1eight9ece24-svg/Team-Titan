@@ -210,6 +210,31 @@
     $("#habitNavCount").textContent = activeHabits().length;
     $$(".nav-link").forEach((button) => button.classList.toggle("active", button.dataset.view === currentView));
     const root = $("#viewRoot");
+    const displayName = state.settings.displayName ? escapeHTML(state.settings.displayName) : "";
+    const pageMeta = {
+      dashboard: {
+        title: displayName ? `Welcome back, ${displayName}. <span class="heading-soft">Keep your rhythm.</span>` : 'Good day. <span class="heading-soft">One step at a time.</span>',
+        subtitle: "A little progress, repeated daily, becomes something big.",
+        eyebrow: "YOUR PERSONAL HABIT SPACE"
+      },
+      habits: {
+        title: 'Your habits. <span class="heading-soft">Your pace.</span>',
+        subtitle: "Build routines that fit your life. One check-in at a time.",
+        eyebrow: "YOUR ROUTINES"
+      },
+      insights: {
+        title: 'Progress, <span class="heading-soft">made visible.</span>',
+        subtitle: "Notice the patterns, celebrate the small wins and keep going.",
+        eyebrow: "YOUR ACTIVITY"
+      },
+      settings: {
+        title: 'Make it <span class="heading-soft">feel like yours.</span>',
+        subtitle: "Personalise your space, reminders and data preferences.",
+        eyebrow: "YOUR PREFERENCES"
+      }
+    };
+    const meta = pageMeta[currentView] || pageMeta.dashboard;
+    setPageMeta(meta.title, meta.subtitle, meta.eyebrow);
     if (currentView === "dashboard") root.innerHTML = renderDashboard();
     else if (currentView === "habits") root.innerHTML = renderHabitsPage();
     else if (currentView === "insights") root.innerHTML = renderInsights();
