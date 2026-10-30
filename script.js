@@ -772,6 +772,8 @@
   }
 
   function handleClick(event) {
+    if (event.target.closest("#notificationPermissionButton")) { enableNotifications(); return; }
+
     const viewButton = event.target.closest("[data-view], [data-view-link]");
     if (viewButton) {
       event.preventDefault();
@@ -890,7 +892,6 @@
     $("#profileShortcut").addEventListener("click", () => { currentView = "settings"; render(); $("#displayNameInput")?.focus(); });
     $("#confirmAction").addEventListener("click", () => { if (pendingConfirm) { const action = pendingConfirm; pendingConfirm = null; action(); } });
     $("#importFile").addEventListener("change", (event) => importData(event.target.files?.[0]));
-    $("#notificationPermissionButton").addEventListener("click", enableNotifications);
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
       installPrompt = event;
