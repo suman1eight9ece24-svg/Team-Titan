@@ -3,27 +3,133 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Habit Tracker</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, sans-serif; line-height: 1.5; background: #fafafa; color: #1f2933; }
-    header, main { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 0; }
-    h1 { margin: 0; font-size: 1.75rem; }
-    .tag { margin: .25rem 0 0; color: #52606d; }
-    .start { border: 1px solid #cbd2d9; border-radius: 6px; padding: 1rem 1.25rem; background: #fff; }
-  </style>
+  <meta name="theme-color" content="#172b24">
+  <meta name="description" content="A calm, private space to build better habits with streaks, heatmaps and simple insights.">
+  <title>Habitflow — Build consistency, one day at a time</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Habit Tracker</h1>
-    <p class="tag">Build habits with streaks and a GitHub-style heatmap.</p>
-  </header>
-  <main id="app">
-    <div class="start">
-      <p id="status">Starting...</p>
-      <p>Replace this with your UI. The core tasks are listed in README.md.</p>
-    </div>
-  </main>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Habitflow home" data-view-link="dashboard">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 17.2 13 23l12-14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 2.5a13.5 13.5 0 1 0 13.5 13.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+        <span>habitflow<span class="brand-period">.</span></span>
+      </a>
+
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <button class="nav-link active" data-view="dashboard"><span class="nav-icon">⌂</span><span>Overview</span></button>
+        <button class="nav-link" data-view="habits"><span class="nav-icon">◎</span><span>My habits</span><span class="nav-count" id="habitNavCount">0</span></button>
+        <button class="nav-link" data-view="insights"><span class="nav-icon">▥</span><span>Insights</span></button>
+        <button class="nav-link" data-view="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-tip">
+          <span class="tip-spark">✳</span>
+          <p class="tip-title">Small steps add up.</p>
+          <p class="tip-copy">Consistency beats intensity. Show up for the next 1%.</p>
+        </div>
+        <div class="privacy-note"><span class="privacy-dot"></span><span>Your data stays on this device</span></div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-brand" data-view="dashboard" aria-label="Go to overview">habitflow<span>.</span></button>
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-divider">/</span><strong id="breadcrumbCurrent">Overview</strong></div>
+        <div class="topbar-actions">
+          <span class="today-label" id="topbarDate"></span>
+          <button class="icon-button" id="themeToggle" title="Toggle colour theme" aria-label="Toggle colour theme">◐</button>
+          <button class="avatar-button" id="profileShortcut" title="Open settings">Y</button>
+        </div>
+      </header>
+
+      <div class="page-wrap">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow" id="pageEyebrow">YOUR PERSONAL HABIT SPACE</p>
+            <h1 id="pageTitle">Good day. <span class="heading-soft">One step at a time.</span></h1>
+            <p class="page-subtitle" id="pageSubtitle">A little progress, repeated daily, becomes something big.</p>
+          </div>
+          <button class="button button-primary" id="newHabitButton"><span class="button-plus">＋</span> New habit</button>
+        </div>
+
+        <section id="viewRoot" aria-live="polite"></section>
+
+        <footer class="app-footer">
+          <span>Made for progress, not perfection.</span>
+          <span>Habitflow <span class="footer-dot">•</span> Your data stays yours</span>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <dialog class="modal" id="habitDialog" aria-labelledby="habitDialogTitle">
+    <form id="habitForm" method="dialog">
+      <div class="modal-head">
+        <div><p class="eyebrow">MAKE IT A ROUTINE</p><h2 id="habitDialogTitle">Create a habit</h2></div>
+        <button class="icon-button modal-close" type="button" data-close-dialog aria-label="Close dialog">×</button>
+      </div>
+      <input type="hidden" id="habitId">
+      <label class="field-label" for="habitName">Habit name</label>
+      <input class="text-input" id="habitName" name="name" maxlength="48" placeholder="e.g. Read for 20 minutes" required>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label" for="habitCategory">Category</label>
+          <select class="text-input" id="habitCategory" name="category">
+            <option>Learning</option><option>Health</option><option>Mindfulness</option><option>Productivity</option><option>Personal</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label" for="habitEmoji">Icon</label>
+          <select class="text-input" id="habitEmoji" name="emoji">
+            <option value="📚">📚 Books</option><option value="🏃">🏃 Fitness</option><option value="💻">💻 Coding</option><option value="🧘">🧘 Mindfulness</option><option value="💧">💧 Water</option><option value="✍️">✍️ Writing</option><option value="🎯">🎯 Focus</option><option value="🌱">🌱 Growth</option><option value="🎨">🎨 Creative</option><option value="☀️">☀️ Morning</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label" for="habitTarget">Weekly target</label>
+          <select class="text-input" id="habitTarget" name="targetDays">
+            <option value="1">1 day / week</option><option value="2">2 days / week</option><option value="3">3 days / week</option><option value="4">4 days / week</option><option value="5" selected>5 days / week</option><option value="6">6 days / week</option><option value="7">Every day</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label" for="habitColor">Habit colour</label>
+          <select class="text-input" id="habitColor" name="color">
+            <option value="green">Forest green</option><option value="blue">Ocean blue</option><option value="purple">Lavender</option><option value="orange">Apricot</option><option value="pink">Rose</option><option value="teal">Teal</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-divider"></div>
+      <div class="form-row form-row-reminder">
+        <div class="form-field">
+          <label class="field-label" for="habitReminderTime">Reminder time <span class="optional">optional</span></label>
+          <input class="text-input" id="habitReminderTime" type="time" name="reminderTime">
+        </div>
+        <div class="form-field">
+          <span class="field-label">Reminder days</span>
+          <div class="weekday-pills" id="reminderDays">
+            <label><input type="checkbox" value="1"><span>M</span></label><label><input type="checkbox" value="2"><span>T</span></label><label><input type="checkbox" value="3"><span>W</span></label><label><input type="checkbox" value="4"><span>T</span></label><label><input type="checkbox" value="5"><span>F</span></label><label><input type="checkbox" value="6"><span>S</span></label><label><input type="checkbox" value="0"><span>S</span></label>
+          </div>
+        </div>
+      </div>
+      <p class="helper-text">Reminders appear as browser notifications while Habitflow is open. Leave all days unselected to repeat every day. You can change these settings any time.</p>
+      <div class="modal-actions"><button class="button button-quiet" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit">Save habit</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="modal small-modal" id="confirmDialog">
+    <div class="modal-head"><div><p class="eyebrow">JUST TO CHECK</p><h2 id="confirmTitle">Archive this habit?</h2></div><button class="icon-button modal-close" type="button" data-close-dialog aria-label="Close dialog">×</button></div>
+    <p class="confirm-copy" id="confirmCopy">You can bring it back later from your archived habits.</p>
+    <div class="modal-actions"><button class="button button-quiet" type="button" data-close-dialog>Keep it</button><button class="button button-primary" id="confirmAction" type="button">Archive habit</button></div>
+  </dialog>
+
+  <input type="file" id="importFile" accept="application/json,.json" hidden>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="script.js" defer></script>
 </body>
 </html>

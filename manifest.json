@@ -1,0 +1,18 @@
+{
+  "name": "Habitflow — Habit Tracker",
+  "short_name": "Habitflow",
+  "description": "A calm, private space to build better habits.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f5",
+  "theme_color": "#172b24",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
